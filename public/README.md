@@ -10,7 +10,6 @@ Tecnologias escolhidas:
 - Back-end: c#.Net
 - Banco de Dados: MongoDB
 
-
 Alunos envolvidos:
 - ESTER CASSIA CHILAVER
 - GABRIELA TAMURA MAKIBARA
