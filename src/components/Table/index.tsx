@@ -44,7 +44,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          {row.name}
+          <b>{row.name}</b>
         </TableCell>
       </TableRow>
       <TableRow>
@@ -79,7 +79,9 @@ export default function CollapsibleTable() {
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
-            <TableCell>Disciplinas ofertadas</TableCell>
+            <TableCell>
+              <b>Disciplinas ofertadas</b>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

@@ -1,4 +1,4 @@
-import React, { MouseEventHandler } from 'react';
+import React, { MouseEventHandler, useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
   Menu,
@@ -29,11 +29,29 @@ const drawerWidth = 240;
 interface IProps {
   onClick: MouseEventHandler<HTMLButtonElement>;
   open: boolean;
+  title: (text: string) => void;
 }
 
-export default function DrawerComponent({ onClick, open }: IProps) {
+export default function DrawerComponent({ onClick, open, title }: IProps) {
   const theme = useTheme();
+  const [disciplinaSelecionada, setDisciplinaSelecionada] = useState('');
+  const [bachareladoSelecionado, setbachareladoSelecionado] = useState('');
   const LogoUfabc = 'https://upload.wikimedia.org/wikipedia/commons/e/ee/Ufabc_logo.png';
+  enum BachareladoEnum {
+    Interdisplinar = 'Bacharelado Interdisciplinar',
+    Pós = 'Pós BI',
+  }
+
+  const handleListItemClick = (bacharelado: string, disciplina?: string) => {
+    if (disciplina) {
+      setDisciplinaSelecionada(disciplina);
+    }
+    setbachareladoSelecionado(bacharelado);
+  };
+
+  useEffect(() => {
+    title(`${bachareladoSelecionado} - ${disciplinaSelecionada}`);
+  }, [disciplinaSelecionada, bachareladoSelecionado]);
 
   return (
     <>
@@ -91,18 +109,24 @@ export default function DrawerComponent({ onClick, open }: IProps) {
           Bacharelado Interdisciplinar
         </Typography>
         <List>
-          {['Disciplinas Obrigatórias', 'Disciplinas Limitas', 'Disciplinas Livres'].map((text) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  <Circle sx={{ fontSize: 16, color: 'green' }} />
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+          {['Disciplinas Obrigatórias', 'Disciplinas Limitadas', 'Disciplinas Livres'].map(
+            (text) => (
+              <ListItem key={text} disablePadding>
+                <ListItemButton
+                  onClick={() =>
+                    handleListItemClick(BachareladoEnum.Interdisplinar, text.split(' ').pop())
+                  }
+                >
+                  <ListItemIcon>
+                    <Circle sx={{ fontSize: 16, color: 'green' }} />
+                  </ListItemIcon>
+                  <ListItemText primary={text} />
+                </ListItemButton>
+              </ListItem>
+            ),
+          )}
         </List>
-        <Divider />
+        {/* <Divider />
         <Typography
           variant="body1"
           style={{
@@ -116,17 +140,21 @@ export default function DrawerComponent({ onClick, open }: IProps) {
           Pós BI
         </Typography>
         <List>
-          {['Disciplinas Obrigatórias', 'Disciplinas Limitas', 'Disciplinas Livres'].map((text) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  <Circle sx={{ fontSize: 16, color: 'green' }} />
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+          {['Disciplinas Obrigatórias', 'Disciplinas Limitadas', 'Disciplinas Livres'].map(
+            (text) => (
+              <ListItem key={text} disablePadding>
+                <ListItemButton
+                  onClick={() => handleListItemClick(BachareladoEnum.Pós, text.split(' ').pop())}
+                >
+                  <ListItemIcon>
+                    <Circle sx={{ fontSize: 16, color: 'green' }} />
+                  </ListItemIcon>
+                  <ListItemText primary={text} />
+                </ListItemButton>
+              </ListItem>
+            ),
+          )}
+        </List> */}
         <Divider />
         <List>
           <ListItem key="Resumo" disablePadding>

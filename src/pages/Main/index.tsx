@@ -9,6 +9,13 @@ import Drawer from 'components/Drawer';
 
 export default function Main() {
   const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState('Bacharelado Interdisciplinar');
+
+  const handleTitle = (text: string) => {
+    if (text !== ' - ') {
+      setTitle(text);
+    }
+  };
 
   const handleDrawerClick = () => {
     setOpen(!open);
@@ -16,11 +23,14 @@ export default function Main() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <Drawer onClick={handleDrawerClick} open={open} />
+      <Drawer onClick={handleDrawerClick} open={open} title={handleTitle} />
       <Container open={open}>
         <Header />
-        <Typography variant="h6" style={{ fontWeight: 700 }}>
+        <Typography variant="h6" style={{ fontWeight: 700, marginBottom: '18px' }}>
           Matrícula 3.2022
+        </Typography>
+        <Typography variant="h6" style={{ marginBottom: '18px' }}>
+          {title}
         </Typography>
         <CollapsibleTable />
       </Container>
