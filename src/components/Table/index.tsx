@@ -11,7 +11,9 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+
 import TableSelection from 'components/TableSelection';
+import CustomizedSnackbars from 'components/Alert';
 
 function createData(name: string) {
   return {
@@ -44,7 +46,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          {row.name}
+          <b>{row.name}</b>
         </TableCell>
       </TableRow>
       <TableRow>
@@ -70,24 +72,30 @@ const rows = [
 
 export default function CollapsibleTable() {
   return (
-    <TableContainer
-      component={Paper}
-      sx={{
-        backgroundColor: 'rgba(123, 236, 18, 0.21)',
-      }}
-    >
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Disciplinas ofertadas</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <Row key={row.name} row={row} />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      <TableContainer
+        component={Paper}
+        sx={{
+          backgroundColor: 'rgba(123, 236, 18, 0.21)',
+          marginBottom: '12px',
+        }}
+      >
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow>
+              <TableCell>
+                <b>Disciplinas ofertadas</b>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row) => (
+              <Row key={row.name} row={row} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <CustomizedSnackbars />
+    </>
   );
 }

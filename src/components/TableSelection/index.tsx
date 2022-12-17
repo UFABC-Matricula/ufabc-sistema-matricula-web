@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
-import { visuallyHidden } from '@mui/utils';
 import {
   Switch,
   Box,
@@ -11,16 +10,15 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  TableSortLabel,
   Paper,
-  Checkbox,
   FormControlLabel,
+  Checkbox,
 } from '@mui/material';
 
 interface Data {
   selection?: null;
-  turma: string;
   campus: string;
+  turma: string;
   vagas: number;
   requisicoes: number;
   posicao: number;
@@ -29,8 +27,8 @@ interface Data {
 }
 
 function createData(
-  turma: string,
   campus: string,
+  turma: string,
   vagas: number,
   requisicoes: number,
   posicao: number,
@@ -39,8 +37,8 @@ function createData(
   selection?: null,
 ): Data {
   return {
-    turma,
     campus,
+    turma,
     vagas,
     requisicoes,
     posicao,
@@ -60,42 +58,7 @@ const rows = [
     'T: Ricardo Oliveira',
     'sexta-feira das 08:00 as 12:00',
   ),
-  // createData('SA', 'MTGA1155', 45, 40, 36, 'T: Patrícia Gomes', 'quinta-feira das 08:00 as 12:00'),
-  // createData('SBC', 'ENGA1455', 75, 32, 12, 'T: Rafaela Freitas', 'sexta-feira das 10:00 as 12:00'),
 ];
-
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-type Order = 'asc' | 'desc';
-
-function getComparator<Key extends keyof any>(
-  order: Order,
-  orderBy: Key,
-): (a: { [key in Key]: any }, b: { [key in Key]: any }) => number {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort<T>(array: readonly Data[], comparator: (a: T, b: T) => number) {
-  const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
 
 interface HeadCell {
   disablePadding?: boolean;
@@ -112,16 +75,16 @@ const headCells: readonly HeadCell[] = [
     label: '',
   },
   {
-    id: 'campus',
-    numeric: true,
-    disablePadding: false,
-    label: 'Campus',
-  },
-  {
     id: 'turma',
     numeric: true,
     disablePadding: false,
     label: 'Turma',
+  },
+  {
+    id: 'campus',
+    numeric: true,
+    disablePadding: false,
+    label: 'Campus',
   },
   {
     id: 'vagas',
@@ -155,67 +118,20 @@ const headCells: readonly HeadCell[] = [
   },
 ];
 
-interface EnhancedTableProps {
-  onRequestSort: (event: any, property: keyof Data) => void;
-  order: Order;
-  orderBy: string;
-}
-
-function EnhancedTableHead(props: EnhancedTableProps) {
-  const { order, orderBy, onRequestSort } = props;
-  const createSortHandler = (property: keyof Data) => (event: any) => {
-    onRequestSort(event, property);
-  };
-
-  return (
-    <TableHead>
-      <TableRow>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  );
-}
-
 export default function TableSelection() {
-  const [order, setOrder] = useState<Order>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('campus');
-  const [selected, setSelected] = useState<readonly string[]>([]);
   const [page, setPage] = useState(0);
+  const [selected, setSelected] = useState<readonly string[]>([]);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const handleRequestSort = (event: any, property: keyof Data) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
-
-  const handleClick = (event: any, turma: string) => {
-    const selectedIndex = selected.indexOf(turma);
+  const handleClick = (row: Data) => {
+    const selectedIndex = selected.indexOf(row.turma);
+    console.log(row);
+    // addRow(row);
     let newSelected: readonly string[] = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, turma);
+      newSelected = newSelected.concat(selected, row.turma);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -243,7 +159,10 @@ export default function TableSelection() {
     setDense(event.target.checked);
   };
 
-  const isSelected = (turma: string) => selected.indexOf(turma) !== -1;
+  const isSelected = (turma: string) => {
+    return selected.indexOf(turma) !== -1;
+  };
+
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   return (
@@ -255,45 +174,56 @@ export default function TableSelection() {
             aria-labelledby="tableTitle"
             size={dense ? 'small' : 'medium'}
           >
-            <EnhancedTableHead order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
+            <TableHead>
+              <TableRow>
+                {headCells.map((headCell) => (
+                  <TableCell
+                    key={headCell.id}
+                    align={headCell.numeric ? 'right' : 'left'}
+                    padding={headCell.disablePadding ? 'none' : 'normal'}
+                  >
+                    {headCell.label}
+                  </TableCell>
+                ))}
+                ;
+              </TableRow>
+            </TableHead>
             <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.turma.toString());
-                  const labelId = `enhanced-table-checkbox-${index}`;
-
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.turma.toString())}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.turma}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell component="th" id={labelId} scope="row" padding="none">
-                        {row.turma}
-                      </TableCell>
-                      <TableCell align="right">{row.campus}</TableCell>
-                      <TableCell align="right">{row.vagas}</TableCell>
-                      <TableCell align="right">{row.requisicoes}</TableCell>
-                      <TableCell align="right">{row.posicao}</TableCell>
-                      <TableCell align="right">{row.professores}</TableCell>
-                      <TableCell align="right">{row.horario}</TableCell>
-                    </TableRow>
-                  );
-                })}
+              {rows.map((row, index) => {
+                const isItemSelected = isSelected(row.turma.toString());
+                const labelId = `enhanced-table-checkbox-${index}`;
+                return (
+                  <TableRow
+                    hover
+                    onClick={() => handleClick(row)}
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={row.turma}
+                    selected={isItemSelected}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        color="primary"
+                        checked={isItemSelected}
+                        inputProps={{
+                          'aria-labelledby': labelId,
+                        }}
+                      />
+                      {isItemSelected}
+                    </TableCell>
+                    <TableCell component="th" id={labelId} scope="row" padding="none">
+                      {row.turma}
+                    </TableCell>
+                    <TableCell align="right">{row.campus}</TableCell>
+                    <TableCell align="right">{row.vagas}</TableCell>
+                    <TableCell align="right">{row.requisicoes}</TableCell>
+                    <TableCell align="right">{row.posicao}</TableCell>
+                    <TableCell align="right">{row.professores}</TableCell>
+                    <TableCell align="right">{row.horario}</TableCell>
+                  </TableRow>
+                );
+              })}
               {emptyRows > 0 && (
                 <TableRow
                   style={{

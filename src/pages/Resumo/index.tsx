@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
-import { Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 
 import { Header } from 'components/Drawer/DrawerComponents';
-import CollapsibleTable from 'components/Table';
 import { Container } from 'components/Container';
 import Drawer from 'components/Drawer';
 
-export default function Main() {
+export default function Resumo() {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('Bacharelado Interdisciplinar');
-  // const [disciplina, setDisciplina] = useState<string>('');
 
   const handleTitle = (text: string) => {
     if (text !== ' - ') {
@@ -21,10 +19,6 @@ export default function Main() {
   const handleDrawerClick = () => {
     setOpen(!open);
   };
-
-  // const handleDisciplina = (nome?: string) => {
-  //   setDisciplina(nome);
-  // };
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -37,7 +31,11 @@ export default function Main() {
         <Typography variant="h6" style={{ marginBottom: '18px' }}>
           {title}
         </Typography>
-        <CollapsibleTable />
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            Resumo da matrícula
+          </Grid>
+        </Grid>
       </Container>
     </Box>
   );
